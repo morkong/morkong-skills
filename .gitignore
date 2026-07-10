@@ -1,3 +1,6 @@
 *.md.backup
 .DS_Store
 Thumbs.db
+.idea/
+.obsidian/
+dev/

@@ -1,0 +1,19 @@
+{
+  "name": "morkong-skills",
+  "owner": {
+    "name": "morkong"
+  },
+  "description": "个人 Claude Code 技能合集，包含学习资源搜集、备考资料整理等实用技能。",
+  "plugins": [
+    {
+      "name": "morkong-skills",
+      "source": "./",
+      "description": "个人 Claude Code 技能合集，包含学习资源搜集、备考资料整理等实用技能。",
+      "version": "1.0.0",
+      "author": {
+        "name": "morkong"
+      },
+      "strict": true
+    }
+  ]
+}

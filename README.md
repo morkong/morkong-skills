@@ -5,11 +5,15 @@
 ## 安装
 
 ```bash
-# 添加个人插件源
-/plugin marketplace add morkong-skills https://github.com/morkong/morkong-skills
+# 添加个人插件源（GitHub 仓库方式）
+/plugin marketplace add morkong/morkong-skills
 
 # 安装
-/plugin install morkong-skills@morkong-skills
+/plugin install morkong-skills
+
+# 或者本地安装（如果已克隆到本地）
+/plugin marketplace add ./.claude-plugin/marketplace.json
+/plugin install morkong-skills
 ```
 
 ## 技能列表
@@ -22,23 +26,87 @@
 
 当你说"帮我搜集 XX 考试的教程资源"、"整理 XX 的学习资料"等时自动激活。
 
-**执行流程**：多维度搜索 → 补充收网 → 链接验证 → 结构化表格 → 输出备考建议。
+**核心能力**：需求澄清 → 12 维度自适应搜索 → 三级质量过滤 → 分层链接验证 → 结构化 Markdown 表格输出（含来源/适用阶段/推荐值/验证状态）。
 
-**输出**：一份分类整理的 Markdown 资源大全文件，字段包括标题/描述/链接/推荐值/是否付费/学习进度。
+**输出文件**：`{主题}_资源大全.md`，附分层学习建议与资源搭配逻辑。
+
+**输出示例**（以 `ai agent 入门到实战` 为例）：
+
+```
+# AI Agent 入门到实战资源大全
+
+> 📅 整理日期：2026-07-10
+> 📊 主题属性：编程技术类 | 难度：入门
+> 📋 需求匹配：核心目标=零基础入门 | 基础水平=略有了解 | 资源偏好=均衡推荐 | 特殊约束=无
+> 📌 验证状态说明：✅ 已验证 / 👀 待确认（国内平台工具受限）/ ❌ 链接失效
+
+## 一、视频教程（5 条）
+| 标题 | 来源 | 描述 | 适用阶段 | 推荐值 | 是否付费 | 验证状态 |
+|------|------|------|---------|--------|---------|---------|
+| [吴恩达《AI Agentic Design Patterns》](url) | YouTube | 斯坦福+OpenAI··· | 入门 | ⭐⭐⭐⭐⭐ | 免费 | ✅ 已验证 |
+| [LangGraph 构建智能体实战教程](url) | B站 | 从零搭建··· | 进阶/冲刺 | ⭐⭐⭐⭐⭐ | 免费 | 👀 待确认 |
+| ··· | ··· | ··· | ··· | ··· | ··· | ··· |
+
+## 二、书籍教材 ···          
+## 三、GitHub 开源资源 ···
+## 四、实战项目 / 练手案例 ···（共 12 个维度）
+
+---
+## 📊 学习建议总结
+
+### 🎯 零基础入门三件套
+1. 吴恩达视频 → 2. LangChain 官方文档 → 3. 开源练手项目
+
+### 🗺️ 分阶段学习计划
+阶段一：基础入门 → 阶段二：实战进阶 → 阶段三：项目冲刺
+（每阶段含资源搭配逻辑说明）
+```
 
 ## 如何添加新技能
 
-1. 在 `skills/` 下新建目录，如 `skills/my-new-skill/`
-2. 创建 `SKILL.md`，按规范编写 frontmatter 和内容
-3. 提交 PR 或直接 push
+符合 Claude Code 官方 skill 规范，目录结构如下：
 
 ```
-skills/
-├── resource-collector/
-│   └── SKILL.md
-└── my-new-skill/          ← 按此模板新增
-    └── SKILL.md
+skill-name/
+├── SKILL.md              # 必需，含 YAML frontmatter（name、description 必填）
+└── Bundled Resources/    # 可选，按需加载
+    ├── scripts/          # 可执行脚本（确定性/重复性任务）
+    ├── references/       # 参考文档（按需加载到上下文）
+    └── assets/           # 模板、图标、字体等输出用资源
 ```
+
+**SKILL.md 最小模板**：
+
+```markdown
+---
+name: my-new-skill
+description: 当用户需要 XXX 时使用此技能。触发词包括："XXX"、"XXX"。适用场景：XXX。
+---
+
+# 技能名称
+
+## 核心原则
+（设计理念，告诉模型为什么这样做）
+
+## 执行流程
+### 步骤一：XXX
+### 步骤二：XXX
+
+## 输出格式
+（定义输出结构和字段）
+```
+
+**关键规范**：
+
+| 规则 | 说明 |
+|------|------|
+| 渐进式加载 | 元数据(~100词)常驻上下文 → SKILL.md 正文触发时加载 → 引用文件按需读取 |
+| SKILL.md 上限 | 建议 < 500 行，接近上限时拆分为 references 文件 |
+| description 要"激进" | 宁可过度触发也不要漏触发，写清楚触发词和适用场景 |
+| 命令式写法 | 用"执行"、"检查"、"输出"，避免"你应该" |
+| 解释 why | 解释为什么这样做，比 MUST/ALWAYS 这类大写强调更有效 |
+
+提交方式：fork 本仓库 → 新建分支 → 在 `skills/` 下按规范添加目录 → 提交 PR。
 
 ## 许可
 
